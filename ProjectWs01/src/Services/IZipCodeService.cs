@@ -7,5 +7,6 @@ namespace ProjectWs01.src.Services
   {
     IEnumerable<ZipCodeQuery> GetAll();
     ZipCodeQuery GetByZipCode(string zipCode);
+    void Add(ZipCodeQuery zipCodeQuery);
   }
 }

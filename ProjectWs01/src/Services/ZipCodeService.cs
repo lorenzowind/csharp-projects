@@ -11,20 +11,20 @@ namespace ProjectWs01.src.Services
 
     public ZipCodeService()
     {
-      _data.TryAdd("1", new ZipCodeQuery {
+      _data.TryAdd("11111111", new ZipCodeQuery {
         City = "Test 1",
         District = "Test 1",
         PublicArea = "Test 1",
         State = "Test 1",
-        ZipCode = "1",
+        ZipCode = "11111111",
       });
 
-      _data.TryAdd("2", new ZipCodeQuery {
+      _data.TryAdd("22222222", new ZipCodeQuery {
         City = "Test 2",
         District = "Test 2",
         PublicArea = "Test 2",
         State = "Test 2",
-        ZipCode = "2",
+        ZipCode = "22222222",
       });
     }
 
@@ -38,6 +38,11 @@ namespace ProjectWs01.src.Services
     public IEnumerable<ZipCodeQuery> GetAll()
     {
       return _data.Values;
+    }
+
+    public void Add(ZipCodeQuery zipCodeQuery)
+    {
+      _data.TryAdd(zipCodeQuery.ZipCode, zipCodeQuery);
     }
   }
 }

@@ -26,7 +26,7 @@ namespace ProjectWs01.src.Controllers
     }
 
     // GET /zipcode/{:zipCode}
-    [HttpGet("{zipCode}")]
+    [HttpGet("{zipCode:regex(^\\d{{8}}$)}")]
     public ActionResult<ZipCodeQuery> GetZipCodeQuery(string zipCode)
     {
       _logger.LogInformation($"GetZipCodeQuery: {zipCode}");
@@ -47,6 +47,25 @@ namespace ProjectWs01.src.Controllers
       _logger.LogInformation("GetAllZipCodeQuery");
       
       return _zipCodeService.GetAll();
+    }
+
+    // POST /zipcode
+    [HttpPost]
+    public ActionResult<ZipCodeQuery> AddZipCodeQuery(ZipCodeQuery zipCodeQuery)
+    {
+      _logger.LogInformation($"AddZipCodeQuery: {zipCodeQuery}");
+
+      if (_zipCodeService.GetByZipCode(zipCodeQuery.ZipCode) != null) {
+        return BadRequest();
+      } 
+      
+      _zipCodeService.Add(zipCodeQuery);
+
+      return CreatedAtAction(
+        nameof(GetZipCodeQuery),
+        new { zipCode = zipCodeQuery.ZipCode },
+        zipCodeQuery
+      );
     }
   }
 }
