@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace ProjectConsole02.Models
 {
-  public class MyContext : DbContext
+  public class MoviesDbContext : DbContext
   {
     public DbSet<Movie> Movies { get; set; }
 
