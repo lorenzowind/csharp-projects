@@ -49,7 +49,7 @@ namespace ProjectConsole02
       //     db.Movies.Remove(movie);
       //     db.SaveChanges();
       //   }
-      // }
+      }
     }
   }
 }
