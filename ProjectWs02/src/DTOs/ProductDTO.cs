@@ -1,6 +1,6 @@
 using ProjectWs02.src.Models;
 
-namespace ProjectWs02.src.Dtos
+namespace ProjectWs02.src.DTOs
 {
   public class ProductDTO
   {
