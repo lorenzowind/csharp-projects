@@ -34,72 +34,88 @@ namespace ProjectWs03.src.Controllers
 
       // GET /products/{:id}
       [HttpGet("{id}")]
-      public ActionResult<ProductDTO> GetProductById(int id)
+      [ProducesResponseType(200)]
+      [ProducesResponseType(400)]
+      [ProducesResponseType(404)]
+      [ProducesResponseType(500)]
+      public async Task<ActionResult<ProductDTO>> GetProductById(int id)
       {
-        var product = _productsService.GetById(id);
-
-        if (product == null)
+        try
         {
-          return NotFound();          
-        }
+          var product = await _productsService.GetById(id);
 
-        return ProductDTO.FromProduct(product);
+          if (product == null)
+          {
+              return NotFound();
+          }
+
+          return ProductDTO.FromProduct(product);
+        } 
+        catch (Exception error)
+        {
+          _logger.LogError(
+            error, 
+            $"An error occurred to find product with id {id}"
+          );
+
+          throw;
+        }
       }
 
-      // POST /products
-      [HttpPost]
-      public ActionResult<ProductDTO> AddProduct(Product product)
-      {
-        var auxProduct = _productsService.GetById(product.Id);
+      // // POST /products
+      // [HttpPost]
+      // public ActionResult<ProductDTO> AddProduct(ProductDTO product)
+      // {
+      //   var auxProduct = _productsService.GetById(product.Id);
 
-        if (auxProduct == null)
-        {
-          return NotFound();          
-        }
+      //   if (auxProduct != null)
+      //   {
+      //     return Unauthorized();          
+      //   }
 
-        _productsService.Add(product);
+      //   _productsService.Add(product);
 
-        return CreatedAtAction(
-          nameof(GetProductById),
-          new { id = product.Id },
-          product
-        );
-      }
+      //   return CreatedAtAction(
+      //     nameof(GetProductById),
+      //     new { id = product.Id },
+      //     product
+      //   );
+      // }
 
-      // PUT /products
-      [HttpPut]
-      public ActionResult<ProductDTO> UpdateProduct(Product product)
-      {
-        var auxProduct = _productsService.GetById(product.Id);
+      // // PUT /products
+      // [HttpPut]
+      // public ActionResult<ProductDTO> UpdateProduct(Product product)
+      // {
+      //   var auxProduct = _productsService.GetById(product.Id);
 
-        if (auxProduct == null)
-        {
-          return NotFound();          
-        }
+      //   if (auxProduct == null)
+      //   {
+      //     return NotFound();          
+      //   }
 
-        _productsService.Update(product);
+      //   _productsService.Update(product);
 
-        return AcceptedAtAction(
-          nameof(GetProductById),
-          new { id = product.Id },
-          product
-        );
-      }
+      //   return AcceptedAtAction(
+      //     nameof(GetProductById),
+      //     new { id = product.Id },
+      //     product
+      //   );
+      // }
 
-      // DELETE /products/:id
-      [HttpDelete("{id}")]
-      public ActionResult<ProductDTO> RemoveProduct(int id)
-      {
-        var auxProduct = _productsService.GetById(id);
+      // // DELETE /products/:id
+      // [HttpDelete("{id}")]
+      // public ActionResult<ProductDTO> RemoveProduct(int id)
+      // {
+      //   var auxProduct = _productsService.GetById(id);
 
-        if (auxProduct == null)
-        {
-          return NotFound();          
-        }
+      //   if (auxProduct == null)
+      //   {
+      //     return NotFound();          
+      //   }
 
-        _productsService.Remove(auxProduct);
+      //   _productsService.Remove(auxProduct);
 
-        return Accepted();
-      }
+      //   return Accepted();
+      // }
     }
 }

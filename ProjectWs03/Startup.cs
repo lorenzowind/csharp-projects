@@ -28,17 +28,19 @@ namespace ProjectWs03
 
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
-    {
-      
+    {  
       services.AddDbContext<DatabaseContext>(options => {
         options.UseSqlServer(
           Configuration.GetConnectionString("DefaultConnection")
         );
 
         options.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
-
-        services.AddSingleton<IProductsService, ProductsService>();
       });
+
+      services.AddSingleton(
+        typeof(IProductsService), 
+        new ProductsService(services)
+      );
 
       services.AddControllers();
       services.AddSwaggerGen(c =>

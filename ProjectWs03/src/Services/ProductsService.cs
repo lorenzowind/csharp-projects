@@ -1,5 +1,7 @@
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 using ProjectWs03.src.Models;
 using ProjectWs03.src.Database;
 
@@ -9,9 +11,11 @@ namespace ProjectWs03.src.Services
   {
     private readonly DatabaseContext _database;
 
-    public ProductsService(DbContextOptions<DatabaseContext> dbContextOptions) 
+    public ProductsService(IServiceCollection serviceCollection) 
     {
-      _database = new DatabaseContext(dbContextOptions);
+      _database = serviceCollection
+        .BuildServiceProvider()
+        .GetRequiredService<DatabaseContext>();
     }
 
     public IEnumerable<Product> GetAll()
@@ -19,31 +23,33 @@ namespace ProjectWs03.src.Services
       return _database.Products;
     }
 
-    public Product GetById(int id)
+    public async Task<Product> GetById(int id)
     {
-      return _database.Products.Find(id);
+      return await _database.Products
+        .AsNoTracking()
+        .SingleOrDefaultAsync(p => p.Id == id);
     }
 
-    public void Add(Product product)
-    {
-      _database.Add(product);
-      _database.SaveChanges();
-    }
+    // public void Add(ProductDTO product)
+    // {
+    //   _database.Add(product);
+    //   _database.SaveChanges();
+    // }
 
-    public void Update(Product product)
-    {
-      var productFound = this.GetById(product.Id);
-      productFound = product;
+    // public void Update(Product product)
+    // {
+    //   var productFound = this.GetById(product.Id);
+    //   productFound = product;
 
-      _database.SaveChanges();
-    }
+    //   _database.SaveChanges();
+    // }
 
-    public void Remove(Product product)
-    {
-      var productFound = this.GetById(product.Id);
+    // public void Remove(Product product)
+    // {
+    //   var productFound = this.GetById(product.Id);
 
-      _database.Remove(productFound);
-      _database.SaveChanges();
-    }
+    //   _database.Remove(productFound);
+    //   _database.SaveChanges();
+    // }
   }
 }
