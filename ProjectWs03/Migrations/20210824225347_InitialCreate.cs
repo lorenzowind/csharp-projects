@@ -56,7 +56,7 @@ namespace ProjectWs03.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "OrderProduct",
+                name: "OrdersProducts",
                 columns: table => new
                 {
                     OrderId = table.Column<int>(type: "int", nullable: false),
@@ -66,15 +66,15 @@ namespace ProjectWs03.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_OrderProduct", x => new { x.OrderId, x.ProductId });
+                    table.PrimaryKey("PK_OrdersProducts", x => new { x.OrderId, x.ProductId });
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Orders_OrderId",
+                        name: "FK_OrdersProducts_Orders_OrderId",
                         column: x => x.OrderId,
                         principalTable: "Orders",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_OrderProduct_Products_ProductId",
+                        name: "FK_OrdersProducts_Products_ProductId",
                         column: x => x.ProductId,
                         principalTable: "Products",
                         principalColumn: "Id",
@@ -82,20 +82,20 @@ namespace ProjectWs03.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_OrderProduct_ProductId",
-                table: "OrderProduct",
-                column: "ProductId");
-
-            migrationBuilder.CreateIndex(
                 name: "IX_Orders_CustomerId",
                 table: "Orders",
                 column: "CustomerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_OrdersProducts_ProductId",
+                table: "OrdersProducts",
+                column: "ProductId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "OrderProduct");
+                name: "OrdersProducts");
 
             migrationBuilder.DropTable(
                 name: "Orders");

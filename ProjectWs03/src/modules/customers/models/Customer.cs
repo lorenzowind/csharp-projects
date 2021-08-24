@@ -1,6 +1,8 @@
 using System.Collections.Generic;
 
-namespace ProjectWs03.src.Models
+using ProjectWs03.src.modules.orders.models;
+
+namespace ProjectWs03.src.modules.customers.models
 {
   public class Customer
   {

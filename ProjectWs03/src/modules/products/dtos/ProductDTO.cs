@@ -1,6 +1,6 @@
-using ProjectWs03.src.Models;
+using ProjectWs03.src.modules.products.models;
 
-namespace ProjectWs03.src.DTOs
+namespace ProjectWs03.src.modules.products.dtos
 {
   public class ProductDTO
   {

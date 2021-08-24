@@ -1,9 +1,13 @@
 using Microsoft.EntityFrameworkCore;
-using ProjectWs03.src.Models;
 
-namespace ProjectWs03.src.Database
+using ProjectWs03.src.modules.customers.models;
+using ProjectWs03.src.modules.orders.models;
+using ProjectWs03.src.modules.ordersProducts.models;
+using ProjectWs03.src.modules.products.models;
+
+namespace ProjectWs03.src.shared.database.contexts
 {
-  public class DatabaseContext : DbContext
+  public class SqlServerContext : DbContext
   {
     public DbSet<Customer> Customers { get; set; }
 
@@ -11,11 +15,11 @@ namespace ProjectWs03.src.Database
     
     public DbSet<Product> Products { get; set; }
 
-    public DatabaseContext()
+    public SqlServerContext()
     {   
     }
 
-    public DatabaseContext (DbContextOptions<DatabaseContext> options)
+    public SqlServerContext (DbContextOptions<SqlServerContext> options)
       : base(options)
     {
     }
@@ -24,7 +28,7 @@ namespace ProjectWs03.src.Database
     {
       modelBuilder.Entity<Customer>(
         entity => {
-          entity.Property(c => c.Name)
+          entity.Property(customer => customer.Name)
           .IsRequired()
           .HasMaxLength(45);
         }
@@ -32,8 +36,8 @@ namespace ProjectWs03.src.Database
 
       modelBuilder.Entity<Order>(
         entity => {
-          entity.HasMany(o => o.Products)
-          .WithMany(p => p.Orders)
+          entity.HasMany(order => order.Products)
+          .WithMany(product => product.Orders)
           .UsingEntity<OrderProduct>(
             join => join.HasOne(product => product.Product)
               .WithMany(product => product.OrderProducts)
@@ -43,11 +47,15 @@ namespace ProjectWs03.src.Database
               .HasForeignKey(order => order.OrderId),
             join =>
             {
-              join.HasKey(p => new { p.OrderId, p.ProductId });
+              join.HasKey(orderProduct => new { 
+                orderProduct.OrderId, orderProduct.ProductId 
+              });
             } 
           );
         }
       );
+
+      modelBuilder.Entity<OrderProduct>().ToTable("OrdersProducts");
     }
   }
 }

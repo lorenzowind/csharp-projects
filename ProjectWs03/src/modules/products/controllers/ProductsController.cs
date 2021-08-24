@@ -4,9 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
-using ProjectWs03.src.DTOs;
-using ProjectWs03.src.Models;
-using ProjectWs03.src.Services;
+
+using ProjectWs03.src.modules.products.dtos;
+using ProjectWs03.src.modules.products.repositories;
 
 namespace ProjectWs03.src.Controllers
 {
@@ -15,11 +15,11 @@ namespace ProjectWs03.src.Controllers
     public class ProductsController : ControllerBase
     {
       private readonly ILogger<ProductsController> _logger;
-      private readonly IProductsService _productsService;
+      private readonly IProductsRepository _productsService;
 
       public ProductsController(
         ILogger<ProductsController> logger,
-        IProductsService productsService
+        IProductsRepository productsService
       ) {
         _logger = logger;
         _productsService = productsService;

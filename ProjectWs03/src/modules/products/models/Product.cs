@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 
-namespace ProjectWs03.src.Models
+using ProjectWs03.src.modules.orders.models;
+using ProjectWs03.src.modules.ordersProducts.models;
+
+namespace ProjectWs03.src.modules.products.models
 {
   public class Product
   {

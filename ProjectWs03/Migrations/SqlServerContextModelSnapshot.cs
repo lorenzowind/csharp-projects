@@ -3,17 +3,15 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using ProjectWs03.src.Database;
+using ProjectWs03.src.shared.database.contexts;
 
 namespace ProjectWs03.Migrations
 {
-    [DbContext(typeof(DatabaseContext))]
-    [Migration("20210820222106_InitialCreate")]
-    partial class InitialCreate
+    [DbContext(typeof(SqlServerContext))]
+    partial class SqlServerContextModelSnapshot : ModelSnapshot
     {
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,7 +19,7 @@ namespace ProjectWs03.Migrations
                 .HasAnnotation("ProductVersion", "5.0.9")
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Customer", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.customers.models.Customer", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -41,7 +39,7 @@ namespace ProjectWs03.Migrations
                     b.ToTable("Customers");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Order", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.orders.models.Order", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -61,7 +59,7 @@ namespace ProjectWs03.Migrations
                     b.ToTable("Orders");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.OrderProduct", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.ordersProducts.models.OrderProduct", b =>
                 {
                     b.Property<int>("OrderId")
                         .HasColumnType("int");
@@ -79,10 +77,10 @@ namespace ProjectWs03.Migrations
 
                     b.HasIndex("ProductId");
 
-                    b.ToTable("OrderProduct");
+                    b.ToTable("OrdersProducts");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Product", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.products.models.Product", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -100,9 +98,9 @@ namespace ProjectWs03.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Order", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.orders.models.Order", b =>
                 {
-                    b.HasOne("ProjectWs03.src.Models.Customer", "Customer")
+                    b.HasOne("ProjectWs03.src.modules.customers.models.Customer", "Customer")
                         .WithMany("Orders")
                         .HasForeignKey("CustomerId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -111,15 +109,15 @@ namespace ProjectWs03.Migrations
                     b.Navigation("Customer");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.OrderProduct", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.ordersProducts.models.OrderProduct", b =>
                 {
-                    b.HasOne("ProjectWs03.src.Models.Order", "Order")
+                    b.HasOne("ProjectWs03.src.modules.orders.models.Order", "Order")
                         .WithMany("OrderProducts")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("ProjectWs03.src.Models.Product", "Product")
+                    b.HasOne("ProjectWs03.src.modules.products.models.Product", "Product")
                         .WithMany("OrderProducts")
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -130,17 +128,17 @@ namespace ProjectWs03.Migrations
                     b.Navigation("Product");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Customer", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.customers.models.Customer", b =>
                 {
                     b.Navigation("Orders");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Order", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.orders.models.Order", b =>
                 {
                     b.Navigation("OrderProducts");
                 });
 
-            modelBuilder.Entity("ProjectWs03.src.Models.Product", b =>
+            modelBuilder.Entity("ProjectWs03.src.modules.products.models.Product", b =>
                 {
                     b.Navigation("OrderProducts");
                 });

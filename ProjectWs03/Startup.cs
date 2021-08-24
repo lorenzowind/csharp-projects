@@ -1,19 +1,20 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
-using ProjectWs03.src.Database;
-using ProjectWs03.src.Services;
+
+using ProjectWs03.src.shared.database.contexts;
+using ProjectWs03.src.shared.database.utils;
+using ProjectWs03.src.modules.customers.repositories;
+using ProjectWs03.src.modules.customers.services;
+using ProjectWs03.src.modules.products.repositories;
+using ProjectWs03.src.modules.products.services;
+using ProjectWs03.src.modules.orders.repositories;
+using ProjectWs03.src.modules.orders.services;
 
 namespace ProjectWs03
 {
@@ -29,17 +30,29 @@ namespace ProjectWs03
     // This method gets called by the runtime. Use this method to add services to the container.
     public void ConfigureServices(IServiceCollection services)
     {  
-      services.AddDbContext<DatabaseContext>(options => {
+      services.AddDbContext<SqlServerContext>(options => {
         options.UseSqlServer(
-          Configuration.GetConnectionString("DefaultConnection")
+          Configuration.GetConnectionString("SqlServerConnection")
         );
 
         options.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
       });
 
+      SqlServerService sqlServerService = new SqlServerService(services);
+
       services.AddSingleton(
-        typeof(IProductsService), 
-        new ProductsService(services)
+        typeof(ICustomersRepository), 
+        new CustomersService(sqlServerService)
+      );
+
+      services.AddSingleton(
+        typeof(IProductsRepository), 
+        new ProductsService(sqlServerService)
+      );
+
+      services.AddSingleton(
+        typeof(IOrdersRepository), 
+        new OrdersService(sqlServerService)
       );
 
       services.AddControllers();

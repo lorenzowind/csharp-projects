@@ -1,7 +1,11 @@
 using System;
 using System.Collections.Generic;
 
-namespace ProjectWs03.src.Models
+using ProjectWs03.src.modules.products.models;
+using ProjectWs03.src.modules.ordersProducts.models;
+using ProjectWs03.src.modules.customers.models;
+
+namespace ProjectWs03.src.modules.orders.models
 {
   public class Order
   {

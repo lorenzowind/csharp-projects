@@ -1,4 +1,7 @@
-namespace ProjectWs03.src.Models
+using ProjectWs03.src.modules.orders.models;
+using ProjectWs03.src.modules.products.models;
+
+namespace ProjectWs03.src.modules.ordersProducts.models
 {
   public class OrderProduct
   {
