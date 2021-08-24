@@ -28,6 +28,9 @@ namespace ProjectWs02.src.Controllers
 
     //POST /orders
     [HttpPost]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
     public async Task<ActionResult<OrderDTO>> ProcessCart(CartDTO cart)
     {
       try
@@ -49,6 +52,9 @@ namespace ProjectWs02.src.Controllers
         {
           return BadRequest("Empty cart");
         }
+
+        order.OrderProducts = new List<OrderProduct>();
+        decimal totalValue = 0;
         
         foreach (var item in cart.Items)
         {
@@ -56,17 +62,83 @@ namespace ProjectWs02.src.Controllers
 
           if (product == null)
           {
-              return BadRequest($"Product with id {item.ProductId} not found");
+            return BadRequest($"Product with id {item.ProductId} not found");
           }
+        
+          var orderItem = new OrderProduct();
+          
+          orderItem.Product = product;
+          orderItem.Quantity = item.Quantity;
+          orderItem.UnitaryValue = product.Price;
+
+          order.OrderProducts.Add(orderItem);
+
+          totalValue += product.Price * item.Quantity;
         }
 
         await _database.Orders.AddAsync(order);
+        await _database.SaveChangesAsync();
+
+        var result = new OrderDTO();
+
+        result.Id = order.Id;
+        result.DoneDate = order.DoneDate;
+        result.CustomerName = order.Customer.Name;
+        result.CustomerEmail = order.Customer.Email;
+        result.Items = 
+          order.OrderProducts.Select(orderProduct => new OrderItemDTO {
+            ProductId = orderProduct.Product.Id,
+            ProductName = orderProduct.Product.Name,
+            Quantity = orderProduct.Quantity
+          }).ToList();
+        result.TotalValue = totalValue;
         
-        await _database.SaveChangesAsync();   
+        return result;
       }
       catch (Exception error)
       {
         _logger.LogError(error, $"An error ocurred to process cart");
+        
+        throw;
+      }
+    }
+    
+    //GET /orders?customerId={:id}
+    [HttpGet]
+    [ProducesResponseType(200)]
+    [ProducesResponseType(400)]
+    [ProducesResponseType(500)]
+    public async Task<ActionResult<List<OrderDTO>>> GetOrdersByCustomerId(
+      int customerId
+    ) {
+      try
+      {
+        var customer = await _database.Customers.FindAsync(customerId);
+
+        if (customer == null)
+        {
+          return BadRequest("Customer not found");
+        }
+
+        // Eager loading
+        var orders = await _database.Orders
+          .Include(order => order.Customer)
+          .Include(order => order.OrderProducts)
+          .ThenInclude(orderProduct => orderProduct.Product)
+          .Where(order => order.CustomerId == customerId)
+          .OrderBy(order => order.DoneDate)
+          .ToListAsync();
+        
+        var result = orders.Select(order => OrderDTO.FromOrder(order)).ToList();
+        
+        return result;
+      } 
+      catch (Exception error)
+      {
+        _logger.LogError(
+          error, 
+          $"An error ocurred to get order by customer with id {customerId}"
+        );
         
         throw;
       }

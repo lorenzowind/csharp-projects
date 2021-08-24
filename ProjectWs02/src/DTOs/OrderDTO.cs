@@ -1,11 +1,13 @@
 using System;
+using System.Linq;
 using System.Collections.Generic;
+using ProjectWs02.src.Models;
 
 namespace ProjectWs02.src.DTOs
 {
   public class OrderDTO
   {
-    public int Code { get; set; }
+    public int Id { get; set; }
     
     public DateTime DoneDate { get; set; }
     
@@ -16,6 +18,23 @@ namespace ProjectWs02.src.DTOs
     public IEnumerable<OrderItemDTO> Items { get; set; }
     
     public decimal TotalValue { get; set; }
+
+    public static OrderDTO FromOrder(Order order)
+    {
+      return new OrderDTO
+      {
+        Id = order.Id,
+        DoneDate = order.DoneDate,
+        CustomerName = order.Customer.Name,
+        CustomerEmail = order.Customer.Email,
+        Items = order.OrderProducts.Select(
+          orderProduct => OrderItemDTO.FromOrderItem(orderProduct)
+        ),
+        TotalValue = order.OrderProducts.Sum(
+          orderProduct => orderProduct.UnitaryValue * orderProduct.Quantity
+        )
+      };
+    }
   }
 
   public class OrderItemDTO
@@ -25,5 +44,15 @@ namespace ProjectWs02.src.DTOs
     public string ProductName {get; set;}
     
     public int Quantity { get; set; }
+    
+    public static OrderItemDTO FromOrderItem(OrderProduct orderProduct)
+    {
+      return new OrderItemDTO
+      {
+        ProductId = orderProduct.Product.Id,
+        ProductName = orderProduct.Product.Name,
+        Quantity = orderProduct.Quantity
+      };
+    }
   }
 }
