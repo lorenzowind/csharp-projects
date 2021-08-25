@@ -4,17 +4,16 @@ using System.Linq;
 using Microsoft.EntityFrameworkCore;
 
 using ProjectWs03.src.modules.orders.models;
-using ProjectWs03.src.modules.orders.repositories;
 using ProjectWs03.src.shared.database.contexts;
 using ProjectWs03.src.shared.database.utils;
 
-namespace ProjectWs03.src.modules.orders.services
+namespace ProjectWs03.src.modules.orders.repositories
 {
-  public class OrdersService : IOrdersRepository
+  public class OrdersRepository : IOrdersRepository
   {
     private readonly SqlServerContext _sqlServerDatabase;
 
-    public OrdersService(SqlServerService sqlServerService) 
+    public OrdersRepository(SqlServerService sqlServerService) 
     {
       _sqlServerDatabase = sqlServerService.context;
     }

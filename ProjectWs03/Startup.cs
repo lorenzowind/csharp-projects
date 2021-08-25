@@ -10,11 +10,8 @@ using Microsoft.EntityFrameworkCore;
 using ProjectWs03.src.shared.database.contexts;
 using ProjectWs03.src.shared.database.utils;
 using ProjectWs03.src.modules.customers.repositories;
-using ProjectWs03.src.modules.customers.services;
 using ProjectWs03.src.modules.products.repositories;
-using ProjectWs03.src.modules.products.services;
 using ProjectWs03.src.modules.orders.repositories;
-using ProjectWs03.src.modules.orders.services;
 
 namespace ProjectWs03
 {
@@ -42,17 +39,17 @@ namespace ProjectWs03
 
       services.AddSingleton(
         typeof(ICustomersRepository), 
-        new CustomersService(sqlServerService)
+        new CustomersRepository(sqlServerService)
       );
 
       services.AddSingleton(
         typeof(IProductsRepository), 
-        new ProductsService(sqlServerService)
+        new ProductsRepository(sqlServerService)
       );
 
       services.AddSingleton(
         typeof(IOrdersRepository), 
-        new OrdersService(sqlServerService)
+        new OrdersRepository(sqlServerService)
       );
 
       services.AddControllers();

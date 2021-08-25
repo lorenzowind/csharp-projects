@@ -2,17 +2,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using ProjectWs03.src.modules.customers.models;
-using ProjectWs03.src.modules.customers.repositories;
 using ProjectWs03.src.shared.database.contexts;
 using ProjectWs03.src.shared.database.utils;
 
-namespace ProjectWs03.src.modules.customers.services
+namespace ProjectWs03.src.modules.customers.repositories
 {
-  public class CustomersService : ICustomersRepository
+  public class CustomersRepository : ICustomersRepository
   {
     private readonly SqlServerContext _sqlServerDatabase;
 
-    public CustomersService(SqlServerService sqlServerService) 
+    public CustomersRepository(SqlServerService sqlServerService) 
     {
       _sqlServerDatabase = sqlServerService.context;
     }

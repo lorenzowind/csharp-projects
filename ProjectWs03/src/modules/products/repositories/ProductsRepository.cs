@@ -3,17 +3,16 @@ using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 using ProjectWs03.src.modules.products.models;
-using ProjectWs03.src.modules.products.repositories;
 using ProjectWs03.src.shared.database.contexts;
 using ProjectWs03.src.shared.database.utils;
 
-namespace ProjectWs03.src.modules.products.services
+namespace ProjectWs03.src.modules.products.repositories
 {
-  public class ProductsService : IProductsRepository
+  public class ProductsRepository : IProductsRepository
   {
     private readonly SqlServerContext _sqlServerDatabase;
 
-    public ProductsService(SqlServerService sqlServerService) 
+    public ProductsRepository(SqlServerService sqlServerService) 
     {
       _sqlServerDatabase = sqlServerService.context;
     }
