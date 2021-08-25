@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using AutoMapper;
 
 using ProjectWs03.src.modules.customers.repositories;
 using ProjectWs03.src.modules.products.repositories;
@@ -23,17 +24,20 @@ namespace ProjectWs03.src.modules.orders.controllers
     private readonly ICustomersRepository _customersService;
     private readonly IOrdersRepository _ordersService;
     private readonly IProductsRepository _productsService;
+    private readonly IMapper _mapper;
 
     public OrdersController(
       ILogger<OrdersController> logger,
       ICustomersRepository customersService,
       IOrdersRepository ordersService,
-      IProductsRepository productsService
+      IProductsRepository productsService,
+      IMapper mapper
     ) {
       _logger = logger;
       _customersService = customersService;
       _ordersService = ordersService;
       _productsService = productsService;
+      _mapper = mapper;
     }
 
     //POST /orders
@@ -88,19 +92,26 @@ namespace ProjectWs03.src.modules.orders.controllers
 
         await _ordersService.Add(order);
 
-        var result = new OrderDTO();
-
-        result.Id = order.Id;
-        result.DoneDate = order.DoneDate;
-        result.CustomerName = order.Customer.Name;
-        result.CustomerEmail = order.Customer.Email;
-        result.Items = 
-          order.OrderProducts.Select(orderProduct => new OrderItemDTO {
-            ProductId = orderProduct.Product.Id,
-            ProductName = orderProduct.Product.Name,
-            Quantity = orderProduct.Quantity
-          }).ToList();
+        OrderDTO result = _mapper.Map<OrderDTO>(order);
+        
+        result.Items = order.OrderProducts.Select(orderProduct => 
+          _mapper.Map<OrderItemDTO>(orderProduct)
+        )
+        .ToList();
+        
         result.TotalValue = totalValue;
+
+        // result.Id = order.Id;
+        // result.DoneDate = order.DoneDate;
+        // result.CustomerName = order.Customer.Name;
+        // result.CustomerEmail = order.Customer.Email;
+        // result.Items = 
+        //   order.OrderProducts.Select(orderProduct => new OrderItemDTO {
+        //     ProductId = orderProduct.Product.Id,
+        //     ProductName = orderProduct.Product.Name,
+        //     Quantity = orderProduct.Quantity
+        //   }).ToList();
+        // result.TotalValue = totalValue;
         
         return result;
       }
