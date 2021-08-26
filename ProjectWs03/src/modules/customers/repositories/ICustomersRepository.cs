@@ -7,6 +7,8 @@ namespace ProjectWs03.src.modules.customers.repositories
   public interface ICustomersRepository
   { 
     Task<Customer> GetById(int id);
+
+    Task<Customer> GetByEmail(string email);
     
     Task Add(Customer customer);
 

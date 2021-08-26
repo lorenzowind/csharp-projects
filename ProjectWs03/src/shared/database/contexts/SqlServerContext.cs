@@ -34,6 +34,13 @@ namespace ProjectWs03.src.shared.database.contexts
         }
       );
 
+      modelBuilder.Entity<Product>(
+        entity => {
+          entity.Property(product => product.Price)
+          .HasPrecision(12,2);
+        }
+      );
+
       modelBuilder.Entity<Order>(
         entity => {
           entity.HasMany(order => order.Products)
@@ -52,6 +59,13 @@ namespace ProjectWs03.src.shared.database.contexts
               });
             } 
           );
+        }
+      );
+
+      modelBuilder.Entity<OrderProduct>(
+        entity => {
+          entity.Property(orderProduct => orderProduct.UnitaryValue)
+          .HasPrecision(12,2);
         }
       );
 

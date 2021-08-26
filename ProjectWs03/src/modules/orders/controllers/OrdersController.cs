@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 using AutoMapper;
 
 using ProjectWs03.src.modules.customers.repositories;
@@ -44,7 +45,9 @@ namespace ProjectWs03.src.modules.orders.controllers
     [HttpPost]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
     [ProducesResponseType(500)]
+    [Authorize]
     public async Task<ActionResult<OrderDTO>> ProcessCart(CartDTO cart)
     {
       try
@@ -127,7 +130,9 @@ namespace ProjectWs03.src.modules.orders.controllers
     [HttpGet]
     [ProducesResponseType(200)]
     [ProducesResponseType(400)]
+    [ProducesResponseType(401)]
     [ProducesResponseType(500)]
+    [Authorize]
     public async Task<ActionResult<List<OrderDTO>>> GetOrdersByCustomerId(
       int customerId
     ) {

@@ -23,6 +23,13 @@ namespace ProjectWs03.src.modules.customers.repositories
         .SingleOrDefaultAsync(customer => customer.Id == id);
     }
 
+    public async Task<Customer> GetByEmail(string email)
+    {
+      return await _sqlServerDatabase.Customers
+        .AsNoTracking()
+        .SingleOrDefaultAsync(customer => customer.Email == email);
+    }
+
     public async Task Add(Customer customer)
     {
       await _sqlServerDatabase.AddAsync(customer);

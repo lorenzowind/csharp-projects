@@ -1,17 +1,21 @@
 using System;
+using System.Text;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.OpenApi.Models;
 using Microsoft.EntityFrameworkCore;
 
 using ProjectWs03.src.shared.database.contexts;
 using ProjectWs03.src.shared.database.utils;
 using ProjectWs03.src.modules.customers.repositories;
-using ProjectWs03.src.modules.products.repositories;
 using ProjectWs03.src.modules.orders.repositories;
+using ProjectWs03.src.modules.products.repositories;
+using ProjectWs03.src.modules.sessions.repositories;
 
 namespace ProjectWs03
 {
@@ -32,8 +36,26 @@ namespace ProjectWs03
           Configuration.GetConnectionString("SqlServerConnection")
         );
 
-        options.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
+        // options.LogTo(Console.WriteLine).EnableSensitiveDataLogging();
       });
+
+      services
+        .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)  
+        .AddJwtBearer(options =>  
+        {  
+          options.TokenValidationParameters = new TokenValidationParameters  
+          {  
+            ValidateIssuer = true,  
+            ValidateAudience = true,  
+            ValidateLifetime = true,  
+            ValidateIssuerSigningKey = true,  
+            ValidIssuer = "https://localhost:5001",  
+            ValidAudience = "https://localhost:5001",  
+            IssuerSigningKey = new SymmetricSecurityKey(
+              Encoding.UTF8.GetBytes("22e59f9f9052eebb28b09e45e34105cb@1234")
+            )  
+          };  
+        });  
 
       SqlServerService sqlServerService = new SqlServerService(services);
 
@@ -43,14 +65,16 @@ namespace ProjectWs03
       );
 
       services.AddSingleton(
+        typeof(IOrdersRepository), 
+        new OrdersRepository(sqlServerService)
+      );
+
+      services.AddSingleton(
         typeof(IProductsRepository), 
         new ProductsRepository(sqlServerService)
       );
 
-      services.AddSingleton(
-        typeof(IOrdersRepository), 
-        new OrdersRepository(sqlServerService)
-      );
+      services.AddSingleton<ISessionsRepository, SessionsRepository>();
 
       services.AddControllers();
       services.AddSwaggerGen(c =>
@@ -74,6 +98,8 @@ namespace ProjectWs03
       app.UseHttpsRedirection();
 
       app.UseRouting();
+
+      app.UseAuthentication();
 
       app.UseAuthorization();
 

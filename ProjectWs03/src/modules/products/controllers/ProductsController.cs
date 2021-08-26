@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.AspNetCore.Authorization;
 
 using ProjectWs03.src.modules.products.dtos;
 using ProjectWs03.src.modules.products.repositories;
@@ -36,8 +37,10 @@ namespace ProjectWs03.src.Controllers
       [HttpGet("{id}")]
       [ProducesResponseType(200)]
       [ProducesResponseType(400)]
+      [ProducesResponseType(401)]
       [ProducesResponseType(404)]
       [ProducesResponseType(500)]
+      [Authorize]
       public async Task<ActionResult<ProductDTO>> GetProductById(int id)
       {
         try
@@ -46,7 +49,7 @@ namespace ProjectWs03.src.Controllers
 
           if (product == null)
           {
-              return NotFound();
+            return NotFound();
           }
 
           return ProductDTO.FromProduct(product);
